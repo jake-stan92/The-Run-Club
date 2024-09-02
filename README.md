@@ -15,7 +15,7 @@ Previous iterations of this project have used a PostgreSQL database to store ath
 
 ### Iteration 1:
 
-StravaJS started out as a python script that I would run on my local machine to track our 10km a week challenge. The script would output similar data and charts to Excel but I would have to screenshot these and send to my friends. In addition, my friends would have to ask me to run the script each time they wanted to see updated figures.
+The Run Club (StravaJS) started out as a python script that I would run on my local machine to track our 10km a week challenge. The script would output similar data and charts to Excel but I would have to screenshot these and send to my friends. In addition, my friends would have to ask me to run the script each time they wanted to see updated figures.
 
 ![alt text](image.png)
 
