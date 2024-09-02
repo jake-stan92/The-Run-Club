@@ -1,16 +1,15 @@
-# StravaJS 🏃‍♂️
+# The Run Club 🏃‍♂️
 
-🔗 https://stravajs.netlify.app/ \
-\*\* the database is currently hosted on a free tier plan. It can take a while to load (up to 1 min 😢) - please be patient 😊
+🔗 https://the-run-club.netlify.app/ \
+\*\* The Run Club is the latest version of the now deprecated [StravaJS](https://github.com/jake-stan92/StravaJS2.0)
 
 ## Description
 
-As a keen activity tracker and a lover of data, I created stravaJS to collate and display activity data in a clear and concise way. Strava doesn’t offer such detailed activity results – at least in the free tier anyway. The idea was initially born when a small group of friends decided to complete a 10k per week running challenge in 2023. The app has gone through 3 iterations to be where it is currently. Using the Strava API, the app collects the activities of given athletes and then filters results accordingly.
+As a keen activity tracker and a lover of data, I created The Run Club to collate and display Strava activity data in a clear and concise way. Strava doesn’t offer such detailed activity results – at least in the free tier anyway. The idea was initially born when a small group of friends decided to complete a 10k per week running challenge in 2023. The app has gone through 4 iterations to be where it is currently. Using the [Strava API](https://developers.strava.com/docs/reference/), the app collects the activities of given athletes and then filters results accordingly.
 
 ## Tech Stack
 
-For this project I decided to use PostgreSQL as a database to store sensitive athlete data. This is easily hosted and maintained on render.
-For the back-end I decided to use NodeJS and React (Vite) on the front-end. This choice was made mainly due to ease of continuous deployment as well as wanting to practice developing in both frameworks. The charts themselves were created using ChartJS.
+Previous iterations of this project have used a PostgreSQL database to store athlete refresh tokens. The app now uses Strava's own OAuth authentication to allow multiple users to authenticate - relieving the need for a backend. The front end is built with React(Vite) and charts created using [Chart.js](https://www.chartjs.org/).
 
 ## The Journey
 
@@ -26,12 +25,18 @@ From here I created the second iteration of the app which used NodeJS as a back-
 
 ![alt text](image-1.png)
 
-### Iteration3 (current):
+### Iteration 3:
 
-I completed the current iteration after honing my skills at the School of Code. I went about creating a sleeker looking dashboard with an improved UI and minimal bugs. While the app currently shows only my data, I plan to increase its functionality in the future.
+I completed iteration 3 after honing my skills at the School of Code. I went about creating a sleeker looking dashboard with an improved UI and minimal bugs. While the app currently shows only my data, I plan to increase its functionality in the future.
 
 ![alt text](image-2.png)
 
+### Iteration 4 (current):
+
+After submitting my project to Strava themselves, they granted an increase in available authenticated users (1 to 999). This allowed me to incorporate their OAuth technology meaning anyone with a Strava account can login and see their activities. Such a change has allowed me to remove the back end and increase the loading speed of the data - no more wrestling with free tier database hosting!
+
+![alt text](image-3.png)
+
 ## Future Plans
 
-To scale the apps functionality, I will likely need to contact Strava themselves and request an increased number of athletes authenticated to my app - current default is 1. This way I can use their OAuth system which is more secure and renders the PostgreSQL database obsolete. Taking this approach will allow any user with a Strava account to login and see their data.
+I plan to release the app to certain groups to gain feedback. Based on this feedback I will look to change/add features to improve the apps useability.
