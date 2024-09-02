@@ -187,23 +187,6 @@ export function startOfWeek(date) {
   return new Date(date.setDate(diff));
 }
 
-// function populateSelect(weekNum) {
-//   const options = [];
-//   const currentYear = new Date().getFullYear();
-//   for (let i = 0; i < weekNum; i++) {
-//     const weekStart = new Date(
-//       weeklyDates(getDateOfWeek(i + 1, currentYear))[0]
-//     );
-//     const weekEnd = new Date(weeklyDates(getDateOfWeek(i + 1, currentYear))[6]);
-//     options.push(
-//       `Week ${
-//         i + 1
-//       } = ${weekStart.toLocaleDateString()} - ${weekEnd.toLocaleDateString()}`
-//     );
-//   }
-//   return options;
-// }
-
 export const getAthlete = async (token) => {
   const response = await fetch(`https://www.strava.com/api/v3/athlete`, {
     headers: {

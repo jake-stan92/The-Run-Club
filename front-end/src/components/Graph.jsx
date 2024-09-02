@@ -13,9 +13,6 @@ const Graph = (props) => {
   const monthlyTotals = getMonthlyTotals(props.data);
   const dailyTotals = getDailyTotal(props.data);
   useEffect(() => {
-    // let currentWeekNum = getWeekNum(new Date());
-    let currentWeekNum = 17;
-
     let chartLocation = document.getElementById(`graph${props.graphNum}`);
     if (props.lineGraph) {
       const myChart = new Chart(chartLocation, {
@@ -107,7 +104,7 @@ const Graph = (props) => {
       };
     }
     // when component unmounts // prevents console error of already used chart canvas
-  }, [props.data]); // empty here working for now
+  }, [props.data]);
 
   return (
     <div className="graph-container bordered">

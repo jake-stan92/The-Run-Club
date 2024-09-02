@@ -27,26 +27,6 @@ function DisplayResults() {
   const { state } = useLocation();
   let stravaData = {};
 
-  // state is not a variable!! try to refactor with just runs as state and pass to other comps
-
-  // populate interface with run data as default
-  // useEffect(() => {
-  //   const getActivities = async () => {
-  //     setLoadingState(true);
-  //     const response = await fetch("https://stravajs2-0.onrender.com/"); // change to hosted name or setup in env
-  //     // const response = await fetch("http://localhost:3000/");
-  //     const data = await response.json();
-  //     const activities = data.payload;
-  //     const allRuns = filterActivitiesByType("Run", activities);
-  //     setAllActivities(activities);
-  //     setActivitiesToDisplay(allRuns);
-  //     setLoadingState(false);
-  //     setCurrentlyDisplaying("Runs");
-  //   };
-  //   getActivities();
-  //   return () => {};
-  // }, []);
-
   // define outside of use effect to avoid errors
   const bigAPICall = async () => {
     setLoadingState(true);
