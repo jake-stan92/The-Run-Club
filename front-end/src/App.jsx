@@ -25,8 +25,8 @@ function App() {
         </p>
         <p>Connect to the app using the strava button below</p>
         <a
-          href={`https://www.strava.com/oauth/authorize?client_id=113640&response_type=code&redirect_uri=http://localhost:5173/exchange_token&approval_prompt=force&scope=activity:read_all`}
-          // href={`https://www.strava.com/oauth/authorize?client_id=113640&response_type=code&redirect_uri=https://the-run-club.netlify.app/exchange_token&approval_prompt=force&scope=activity:read_all`}
+          // href={`https://www.strava.com/oauth/authorize?client_id=113640&response_type=code&redirect_uri=http://localhost:5173/exchange_token&approval_prompt=force&scope=activity:read_all`}
+          href={`https://www.strava.com/oauth/authorize?client_id=113640&response_type=code&redirect_uri=https://the-run-club.netlify.app/exchange_token&approval_prompt=force&scope=activity:read_all`}
         >
           <img id="connect-strava-button" src={stravaButtonLarge}></img>
         </a>
