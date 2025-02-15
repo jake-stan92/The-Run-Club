@@ -90,6 +90,15 @@ function DisplayResults() {
     setCurrentlyDisplaying("Runs");
   };
 
+  const populateRides = () => {
+    const allRides = filterActivitiesByType(
+      ["Ride", "VirtualRide"],
+      allActivities
+    );
+    setActivitiesToDisplay(allRides);
+    setCurrentlyDisplaying("Rides");
+  };
+
   return (
     <>
       <Header athlete={athlete} />
@@ -102,6 +111,7 @@ function DisplayResults() {
         <SliderToggle
           populateRuns={populateRuns}
           populateWalks={populateWalks}
+          populateRides={populateRides}
           loadingState={loadingState}
         />
 

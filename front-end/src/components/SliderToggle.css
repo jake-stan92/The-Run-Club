@@ -80,3 +80,25 @@ input:checked + .slider:before {
   filter: invert(31%) sepia(68%) saturate(1156%) hue-rotate(321deg)
     brightness(94%) contrast(82%);
 }
+
+/* new CSS 2025 */
+input[type=radio] {
+  display: none
+}
+
+.label {
+    opacity: 0.1;
+    }
+    
+    input[type=radio] + label {
+    opacity: 1;
+    }
+
+label {
+cursor: pointer;   
+}
+
+.label-active {
+  border-bottom: 1px solid var(--accentRed);
+  padding-bottom: 0.25rem;
+}
