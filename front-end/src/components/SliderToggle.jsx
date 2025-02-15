@@ -3,20 +3,35 @@ import { useState } from "react";
 import "./SliderToggle.css";
 import runningIcon from "../assets/images/running-man.svg";
 import walkingIcon from "../assets/images/person-walking.svg";
+import cyclingIcon from "../assets/images/cycling-man.svg";
 
-const SliderToggle = ({ populateRuns, populateWalks, loadingState }) => {
+const SliderToggle = ({
+  populateRides,
+  populateRuns,
+  populateWalks,
+  loadingState,
+}) => {
   const [runActive, setRunActive] = useState(true);
   const [walkActive, setWalkActive] = useState(false);
+  const [cycleActive, setCycleActive] = useState(false);
+
   const handleToggle = (e) => {
-    if (e.target.value === "on") {
-      e.target.value = "off";
+    if (e.target.value === "walking") {
+      // e.target.value = "off";
       populateWalks();
       setRunActive(false);
       setWalkActive(true);
-    } else if (e.target.value === "off") {
-      e.target.value = "on";
+      setCycleActive(false);
+    } else if (e.target.value === "running") {
+      // e.target.value = "on";
       populateRuns();
       setRunActive(true);
+      setWalkActive(false);
+      setCycleActive(false);
+    } else if (e.target.value === "cycling") {
+      populateRides();
+      setCycleActive(true);
+      setRunActive(false);
       setWalkActive(false);
     }
   };
@@ -24,26 +39,49 @@ const SliderToggle = ({ populateRuns, populateWalks, loadingState }) => {
     <>
       {!loadingState ? (
         <>
-          <div className="slider-container">
-            <img
-              className={runActive ? "active" : ""}
-              src={runningIcon}
-              alt="running-icon"
-            />
-            <label className="switch" htmlFor="toggle-input">
+          <form action="#" onChange={handleToggle}>
+            <div className="slider-container">
               <input
-                type="checkbox"
-                onChange={handleToggle}
-                id="toggle-input"
+                type="radio"
+                name="activity"
+                value="walking"
+                id="walking-radio"
               />
-              <span className="slider round"></span>
-            </label>
-            <img
-              className={walkActive ? "active" : ""}
-              src={walkingIcon}
-              alt="walking-icon"
-            />
-          </div>
+              <label
+                htmlFor="walking-radio"
+                className={walkActive ? "label-active" : ""}
+              >
+                <img className={walkActive ? "active" : ""} src={walkingIcon} />
+              </label>
+              <input
+                type="radio"
+                name="activity"
+                value="running"
+                id="running-radio"
+              />
+              <label
+                htmlFor="running-radio"
+                className={runActive ? "label-active" : ""}
+              >
+                <img className={runActive ? "active" : ""} src={runningIcon} />
+              </label>
+              <input
+                type="radio"
+                name="activity"
+                value="cycling"
+                id="cycling-radio"
+              />
+              <label
+                htmlFor="cycling-radio"
+                className={cycleActive ? "label-active" : ""}
+              >
+                <img
+                  className={cycleActive ? "active" : ""}
+                  src={cyclingIcon}
+                />
+              </label>
+            </div>
+          </form>
         </>
       ) : (
         <></>

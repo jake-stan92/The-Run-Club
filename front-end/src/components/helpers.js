@@ -1,12 +1,22 @@
 // filter activity by type (run vs walk)
 export function filterActivitiesByType(type, activities) {
   const filteredActivities = [];
-
-  activities.map((activity) => {
-    if (activity.type === type) {
-      filteredActivities.push(activity);
+  // activity type passed in can be an array - cater to group 'ride' and 'virtual ride'
+  if (typeof type === "object") {
+    for (let i = 0; i < type.length; i++) {
+      activities.map((activity) => {
+        if (activity.type === type[i]) {
+          filteredActivities.push(activity);
+        }
+      });
     }
-  });
+  } else {
+    activities.map((activity) => {
+      if (activity.type === type) {
+        filteredActivities.push(activity);
+      }
+    });
+  }
   return filteredActivities;
 }
 
@@ -27,19 +37,27 @@ export function getAvgDistance(activities) {
     total += activity.distance;
   });
   const totalKM = total / 1000;
-  const averageDistance = (totalKM / activities.length).toFixed(2);
-  return Number(averageDistance);
+  if (totalKM === 0) {
+    return 0;
+  } else {
+    const averageDistance = (totalKM / activities.length).toFixed(2);
+    return Number(averageDistance);
+  }
 }
 
 // avg speed
 export function getAvgSpeed(activities) {
   let total = 0;
-  activities.map((run) => {
-    total += run.average_speed;
+  activities.map((activity) => {
+    total += activity.average_speed;
   });
-  const average = total / activities.length;
-  const kiloPerHour = (average * 3.6).toFixed(2); // Convert S.I (m/s) units to KMH -- https://www.reddit.com/r/Strava/comments/pxbqql/strava_api_what_are_the_activitys_speed_fields/
-  return Number(kiloPerHour);
+  if (total === 0) {
+    return 0;
+  } else {
+    const average = total / activities.length;
+    const kiloPerHour = (average * 3.6).toFixed(2); // Convert S.I (m/s) units to KMH -- https://www.reddit.com/r/Strava/comments/pxbqql/strava_api_what_are_the_activitys_speed_fields/
+    return Number(kiloPerHour);
+  }
 }
 
 // year to date >> monthly count and distance
@@ -137,7 +155,11 @@ export function getAvgHeartRate(activities) {
     }
   });
   avgHeartRate = totalHR / activities.length;
-  return Math.round(avgHeartRate);
+  if (totalHR === 0) {
+    return 0;
+  } else {
+    return Math.round(avgHeartRate);
+  }
 }
 
 export function getHighestHR(activities) {
