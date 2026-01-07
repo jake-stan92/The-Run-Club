@@ -30,18 +30,60 @@ function DisplayResults() {
   // define outside of use effect to avoid errors
   const bigAPICall = async () => {
     setLoadingState(true);
-    // obtain access token for user
-    const accessToken = await getAccessToken(state.code);
-    if (accessToken) {
-      stravaData = accessToken;
-    } else {
-      navigate("/error", {
-        replace: true,
-        state: {
-          message: "Failed to get access token, please try again",
-        },
-      });
+
+    let stravaData = null;
+
+    // 1. Check localStorage for existing tokens
+    const storedTokens = localStorage.getItem("stravaTokens");
+    if (storedTokens) {
+      stravaData = JSON.parse(storedTokens);
     }
+
+    // 2. If we have tokens, check expiry
+    if (stravaData) {
+      const isExpired = Date.now() / 1000 > stravaData.expiresAt - 60; // refresh 1 min early to avoid errors
+
+      if (isExpired) {
+        // 3. Refresh expired token
+        const refreshed = await refreshAccessToken(stravaData.refreshToken);
+
+        if (!refreshed) {
+          navigate("/error", {
+            replace: true,
+            state: { message: "Session expired. Please re-authorise." },
+          });
+          return;
+        }
+
+        stravaData = refreshed;
+        localStorage.setItem("stravaTokens", JSON.stringify(refreshed));
+      }
+    }
+
+    // 4. No stored token → try OAuth code
+    if (!stravaData) {
+      if (!state?.code) {
+        navigate("/error", {
+          replace: true,
+          state: { message: "Missing Strava authorisation code" },
+        });
+        return;
+      }
+
+      const tokenResponse = await getAccessToken(state.code);
+
+      if (!tokenResponse) {
+        navigate("/error", {
+          replace: true,
+          state: { message: "Failed to get access token, please try again" },
+        });
+        return;
+      }
+
+      stravaData = tokenResponse;
+      localStorage.setItem("stravaTokens", JSON.stringify(tokenResponse));
+    }
+
     // obtain user data
     const athlete = await getAthlete(stravaData.accessToken);
     if (athlete) {

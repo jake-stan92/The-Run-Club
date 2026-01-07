@@ -291,3 +291,34 @@ export const getAccessToken = async (code) => {
     // console.log(stravaData.accessToken);
   }
 };
+
+export const refreshAccessToken = async (refreshToken) => {
+  if (!refreshToken) return null;
+
+  try {
+    const response = await fetch(
+      `https://www.strava.com/oauth/token?client_id=113640&client_secret=d743f84535dd4b63545fb9cd24dca659a4201caf&grant_type=refresh_token&refresh_token=${refreshToken}`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const data = await response.json();
+
+    return {
+      accessToken: data.access_token,
+      refreshToken: data.refresh_token, // Strava may rotate this
+      expiresAt: data.expires_at, // Unix time (seconds)
+    };
+  } catch (err) {
+    console.error("Failed to refresh Strava token", err);
+    return null;
+  }
+};
