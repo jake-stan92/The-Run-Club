@@ -11,6 +11,7 @@ import {
   getAccessToken,
   getAthlete,
   getAthleteActivities,
+  refreshAccessToken,
 } from "../components/helpers.js";
 import Last5RunsTable from "../components/Last5RunsTable.jsx";
 import TopStatContainer from "../components/TopStatContainer.jsx";
