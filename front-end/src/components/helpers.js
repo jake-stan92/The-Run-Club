@@ -322,3 +322,58 @@ export const refreshAccessToken = async (refreshToken) => {
     return null;
   }
 };
+
+export const getAthleteClubs = async (token) => {
+  const response = await fetch(`https://www.strava.com/api/v3/athlete/clubs`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (response.ok) {
+    const data = await response.json();
+    return data;
+  } else {
+    return null;
+  }
+};
+
+export const getClubActivities = async (token, clubId) => {
+  // 1406254
+  const response = await fetch(
+    `https://www.strava.com/api/v3/clubs/${clubId}/activities?per_page=200`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  if (response.ok) {
+    // console.log(response);
+    const data = await response.json();
+    console.log("club activities", data);
+  } else {
+    console.log("failed to get club activities");
+    return null;
+  }
+};
+
+export const getAthleteStats = async (token) => {
+  // 1406254
+  const response = await fetch(
+    `https://www.strava.com/api/v3/athletes//stats`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  if (response.ok) {
+    // console.log(response);
+    const data = await response.json();
+    console.log("athlete Stats", data);
+  } else {
+    console.log("failed to get club activities");
+    return null;
+  }
+};
