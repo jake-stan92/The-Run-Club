@@ -125,6 +125,14 @@
   height: 2rem;
 }
 
+/* top slider container */
+#slider-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 0.5rem;
+}
+
 /* Screen size over 500 */
 @media (width > 500px) {
   #root {

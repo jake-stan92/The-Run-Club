@@ -4,12 +4,14 @@ import "./SliderToggle.css";
 import runningIcon from "../assets/images/running-man.svg";
 import walkingIcon from "../assets/images/person-walking.svg";
 import cyclingIcon from "../assets/images/cycling-man.svg";
+import groupIcon from "../assets/images/group-icon.svg";
 
 const SliderToggle = ({
   populateRides,
   populateRuns,
   populateWalks,
   loadingState,
+  clubs,
 }) => {
   const [runActive, setRunActive] = useState(true);
   const [walkActive, setWalkActive] = useState(false);
@@ -80,6 +82,11 @@ const SliderToggle = ({
                   src={cyclingIcon}
                 />
               </label>
+              {clubs && (
+                <a href="/clubs">
+                  <img src={groupIcon}></img>
+                </a>
+              )}
             </div>
           </form>
         </>
