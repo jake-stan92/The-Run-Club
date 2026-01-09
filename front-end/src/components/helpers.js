@@ -349,9 +349,8 @@ export const getClubActivities = async (token, clubId) => {
     }
   );
   if (response.ok) {
-    // console.log(response);
     const data = await response.json();
-    console.log("club activities", data);
+    return data;
   } else {
     console.log("failed to get club activities");
     return null;

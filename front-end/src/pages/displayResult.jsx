@@ -25,6 +25,7 @@ function DisplayResults() {
   const [currentlyDisplaying, setCurrentlyDisplaying] = useState("");
   const [loadingState, setLoadingState] = useState(false);
   const [memberOfQualifiedClub, setMemberOfQualifiedClub] = useState(false);
+  const [clubsData, setClubsData] = useState(null);
   const [statType, setStatType] = useState("personal");
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -91,7 +92,6 @@ function DisplayResults() {
     const athlete = await getAthlete(stravaData.accessToken);
     if (athlete) {
       setAthlete(athlete);
-      // console.log(athlete);
     } else {
       navigate("/error", {
         replace: true,
@@ -109,7 +109,6 @@ function DisplayResults() {
       if (Date.now() < parsed.expires) {
         // in date, use
         activities = parsed.activities;
-        console.log("present and valid, using cached data");
       } else {
         // Expired, retrieve new
         activities = await getAthleteActivities(stravaData.accessToken);
@@ -120,7 +119,6 @@ function DisplayResults() {
             expires: Date.now() + 10 * 60 * 1000,
           })
         );
-        console.log("present but expired, retrieve new");
       }
     } else {
       activities = await getAthleteActivities(stravaData.accessToken);
@@ -131,7 +129,6 @@ function DisplayResults() {
           expires: Date.now() + 10 * 60 * 1000,
         })
       );
-      console.log("retrieved brand new data as none present");
     }
 
     if (activities) {
@@ -153,9 +150,7 @@ function DisplayResults() {
       const parsed = JSON.parse(cachedclubs);
       if (Date.now() < parsed.expires) {
         // in date, use
-        console.log(parsed);
         athleteClubs = parsed.clubs;
-        console.log("clubs present and valid, using cached data");
       } else {
         // Expired, retrieve new
         athleteClubs = await getAthleteClubs(stravaData.accessToken);
@@ -166,7 +161,6 @@ function DisplayResults() {
             expires: Date.now() + 10 * 60 * 1000,
           })
         );
-        console.log("clubs present but expired, retrieve new");
       }
     } else {
       athleteClubs = await getAthleteClubs(stravaData.accessToken);
@@ -177,35 +171,74 @@ function DisplayResults() {
           expires: Date.now() + 10 * 60 * 1000,
         })
       );
-      console.log("clubs fetched brand new");
     }
 
     if (athleteClubs.length > 0) {
-      const ggID = 1229955;
+      // const ggID = 1229955;
+      const ggID = 0;
       const albID = 1406254;
       const ggClub = athleteClubs.find((club) => club.id === ggID);
       const albClub = athleteClubs.find((club) => club.id === albID);
 
       if (ggClub) {
-        console.log("found gg club memebership");
         qualifyingClubs.push(ggClub);
       }
 
       if (albClub) {
-        console.log("found alb club membership");
         qualifyingClubs.push(albClub);
       }
 
-      console.log(qualifyingClubs);
-
       if (ggClub || albClub) {
         setMemberOfQualifiedClub(true);
+
+        // get all clubs activities
+        let allClubsData = [];
+        const cachedClubsActivities = sessionStorage.getItem(
+          "strava-cached-club-activities"
+        );
+        if (cachedClubsActivities) {
+          const parsed = JSON.parse(cachedClubsActivities);
+          if (Date.now() < parsed.expires) {
+            // in date, use
+            allClubsData = parsed.clubActivities;
+          } else {
+            // Expired, retrieve new
+            for (const club of qualifyingClubs) {
+              const clubActivities = await getClubActivities(
+                stravaData.accessToken,
+                club.id
+              );
+              allClubsData.push({ club, clubActivities });
+            }
+            sessionStorage.setItem(
+              "strava-cached-club-activities",
+              JSON.stringify({
+                clubActivities: allClubsData,
+                expires: Date.now() + 10 * 60 * 1000,
+              })
+            );
+          }
+        } else {
+          for (const club of qualifyingClubs) {
+            const clubActivities = await getClubActivities(
+              stravaData.accessToken,
+              club.id
+            );
+            allClubsData.push({ club, clubActivities });
+          }
+          sessionStorage.setItem(
+            "strava-cached-club-activities",
+            JSON.stringify({
+              clubActivities: allClubsData,
+              expires: Date.now() + 10 * 60 * 1000,
+            })
+          );
+        }
+        console.log(allClubsData);
+        setClubsData(allClubsData);
       }
     }
-    // const clubActivities = await getClubActivities(
-    //   stravaData.accessToken,
-    //   1406254 // get this dynamically
-    // );
+
     const allRuns = filterActivitiesByType("Run", activities);
     setActivitiesToDisplay(allRuns);
     setLoadingState(false);
@@ -257,7 +290,7 @@ function DisplayResults() {
           />
         )}
 
-        {statType === "clubs" && <ClubStats />}
+        {statType === "clubs" && <ClubStats allClubsData={clubsData} />}
       </div>
       <Footer />
     </>
