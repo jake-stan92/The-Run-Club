@@ -4,7 +4,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Header from "../components/Header.jsx";
 import "../App.css";
 import Footer from "../components/Footer";
-import Graph from "../components/Graph";
 
 import {
   filterActivitiesByType,
@@ -15,10 +14,9 @@ import {
   getClubActivities,
   refreshAccessToken,
 } from "../components/helpers.js";
-import Last5RunsTable from "../components/Last5RunsTable.jsx";
-import TopStatContainer from "../components/TopStatContainer.jsx";
-import OtherStats from "../components/OtherStats.jsx";
 import SliderToggle from "../components/SliderToggle.jsx";
+import PersonalStats from "../components/PersonalStats.jsx";
+import ClubStats from "../components/ClubStats.jsx";
 
 function DisplayResults() {
   const [athlete, setAthlete] = useState({});
@@ -27,6 +25,7 @@ function DisplayResults() {
   const [currentlyDisplaying, setCurrentlyDisplaying] = useState("");
   const [loadingState, setLoadingState] = useState(false);
   const [memberOfQualifiedClub, setMemberOfQualifiedClub] = useState(false);
+  const [statType, setStatType] = useState("personal");
   const navigate = useNavigate();
   const { state } = useLocation();
   let qualifyingClubs = [];
@@ -246,45 +245,19 @@ function DisplayResults() {
           populateRuns={populateRuns}
           populateWalks={populateWalks}
           populateRides={populateRides}
+          setStatType={setStatType}
           loadingState={loadingState}
           clubs={memberOfQualifiedClub}
         />
-        <TopStatContainer
-          loadingState={loadingState}
-          activities={activitiesToDisplay}
-          currentlyDisplaying={currentlyDisplaying}
-        />
+        {statType === "personal" && (
+          <PersonalStats
+            loadingState={loadingState}
+            activitiesToDisplay={activitiesToDisplay}
+            currentlyDisplaying={currentlyDisplaying}
+          />
+        )}
 
-        <div className="graph-collection">
-          <Graph
-            data={activitiesToDisplay}
-            graphNum={1}
-            time={"month"}
-            title={"Monthly Total (km)"}
-            lineGraph={true}
-            loadingState={loadingState}
-            currentlyDisplaying={currentlyDisplaying}
-          />
-          <Graph
-            data={activitiesToDisplay}
-            graphNum={2}
-            time={"day"}
-            title={"Daily Total (km)"}
-            lineGraph={false}
-            loadingState={loadingState}
-          />
-        </div>
-        <div className="bottom-stat-collection">
-          <Last5RunsTable
-            loadingState={loadingState}
-            activities={activitiesToDisplay}
-            currentlyDisplaying={currentlyDisplaying}
-          />
-          <OtherStats
-            loadingState={loadingState}
-            activities={activitiesToDisplay}
-          />
-        </div>
+        {statType === "clubs" && <ClubStats />}
       </div>
       <Footer />
     </>
