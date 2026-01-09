@@ -234,11 +234,11 @@ function DisplayResults() {
             })
           );
         }
-        console.log(allClubsData);
         setClubsData(allClubsData);
       }
     }
 
+    // default to personal > runs on page load
     const allRuns = filterActivitiesByType("Run", activities);
     setActivitiesToDisplay(allRuns);
     setLoadingState(false);
