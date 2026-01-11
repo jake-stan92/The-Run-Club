@@ -1,3 +1,4 @@
+import ClubStatTable from "./ClubStatTable";
 import { filterActivitiesByType, getTotalDistance } from "./helpers";
 
 export default function ClubStats({ allClubsData }) {
@@ -53,36 +54,12 @@ export default function ClubStats({ allClubsData }) {
   console.log(tableData);
 
   return (
-    <table style={{ borderCollapse: "collapse", width: "100%" }}>
-      <thead>
-        {/* show totals only on mobile (not individual activity totals) */}
-        <tr>
-          <th>Name</th>
-          {/* <th>Walks</th> */}
-          {/* <th>Walk</th> */}
-          {/* <th>Runs</th> */}
-          {/* <th>Run</th> */}
-          {/* <th>Rides</th> */}
-          {/* <th>Ride</th> */}
-          <th>Total</th>
-          <th>Weighted</th>
-        </tr>
-      </thead>
-      <tbody>
-        {tableData.map((athlete) => (
-          <tr key={athlete.name}>
-            <td>{athlete.name}</td>
-            {/* <td>{athlete.numWalks}</td> */}
-            {/* <td>{athlete.walkTotalDistance}</td> */}
-            {/* <td>{athlete.numruns}</td> */}
-            {/* <td>{athlete.runTotalDistance}</td> */}
-            {/* <td>{athlete.numRides}</td> */}
-            {/* <td>{athlete.rideTotalDistance}</td> */}
-            <td>{athlete.totalDistance}</td>
-            <td>{athlete.weightedTotalDistance}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <>
+      <ClubStatTable tableData={tableData} filter={"Total"} />
+      <ClubStatTable tableData={tableData} filter={"Run"} />
+      <ClubStatTable tableData={tableData} filter={"Walk"} />
+      <ClubStatTable tableData={tableData} filter={"Ride"} />
+      <ClubStatTable tableData={tableData} filter={"Weighted"} />
+    </>
   );
 }
