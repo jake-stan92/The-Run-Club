@@ -1,0 +1,44 @@
+.clubs-stats-table {
+  text-align: center;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border-radius: 5px;
+  width: calc(100% - 16px);
+  margin: auto;
+  margin-bottom: 1.5rem;
+}
+
+.club-stats-athlete-name-column {
+  text-align: left;
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+}
+
+.club-stats-athlete-name-column img,
+.clubs-stats-athlete-name-column-img-placeholder {
+  width: 25px;
+}
+
+.clubs-stats-athlete-name-column-img-placeholder {
+  text-align: center;
+}
+
+.clubs-stats-table td:not(.club-stats-athlete-name-column) {
+  width: 50%;
+}
+
+.clubs-stats-table tr:nth-child(odd) {
+  background-color: rgb(233, 233, 233);
+}
+
+.clubs-stats-table tr:nth-child(even),
+.clubs-stats-table th {
+  background-color: white;
+}
+
+.clubs-stats-table thead th,
+.clubs-stats-table tbody tr td {
+  padding: 0.5rem;
+}

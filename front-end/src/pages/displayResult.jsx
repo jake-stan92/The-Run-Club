@@ -4,7 +4,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Header from "../components/Header.jsx";
 import "../App.css";
 import Footer from "../components/Footer";
-import Graph from "../components/Graph";
 
 import {
   filterActivitiesByType,
@@ -15,10 +14,9 @@ import {
   getClubActivities,
   refreshAccessToken,
 } from "../components/helpers.js";
-import Last5RunsTable from "../components/Last5RunsTable.jsx";
-import TopStatContainer from "../components/TopStatContainer.jsx";
-import OtherStats from "../components/OtherStats.jsx";
 import SliderToggle from "../components/SliderToggle.jsx";
+import PersonalStats from "../components/PersonalStats.jsx";
+import ClubStats from "../components/ClubStats.jsx";
 
 function DisplayResults() {
   const [athlete, setAthlete] = useState({});
@@ -27,6 +25,8 @@ function DisplayResults() {
   const [currentlyDisplaying, setCurrentlyDisplaying] = useState("");
   const [loadingState, setLoadingState] = useState(false);
   const [memberOfQualifiedClub, setMemberOfQualifiedClub] = useState(false);
+  const [clubsData, setClubsData] = useState(null);
+  const [statType, setStatType] = useState("personal");
   const navigate = useNavigate();
   const { state } = useLocation();
   let qualifyingClubs = [];
@@ -92,7 +92,6 @@ function DisplayResults() {
     const athlete = await getAthlete(stravaData.accessToken);
     if (athlete) {
       setAthlete(athlete);
-      // console.log(athlete);
     } else {
       navigate("/error", {
         replace: true,
@@ -110,7 +109,6 @@ function DisplayResults() {
       if (Date.now() < parsed.expires) {
         // in date, use
         activities = parsed.activities;
-        console.log("present and valid, using cached data");
       } else {
         // Expired, retrieve new
         activities = await getAthleteActivities(stravaData.accessToken);
@@ -121,7 +119,6 @@ function DisplayResults() {
             expires: Date.now() + 10 * 60 * 1000,
           })
         );
-        console.log("present but expired, retrieve new");
       }
     } else {
       activities = await getAthleteActivities(stravaData.accessToken);
@@ -132,7 +129,6 @@ function DisplayResults() {
           expires: Date.now() + 10 * 60 * 1000,
         })
       );
-      console.log("retrieved brand new data as none present");
     }
 
     if (activities) {
@@ -154,9 +150,7 @@ function DisplayResults() {
       const parsed = JSON.parse(cachedclubs);
       if (Date.now() < parsed.expires) {
         // in date, use
-        console.log(parsed);
         athleteClubs = parsed.clubs;
-        console.log("clubs present and valid, using cached data");
       } else {
         // Expired, retrieve new
         athleteClubs = await getAthleteClubs(stravaData.accessToken);
@@ -167,7 +161,6 @@ function DisplayResults() {
             expires: Date.now() + 10 * 60 * 1000,
           })
         );
-        console.log("clubs present but expired, retrieve new");
       }
     } else {
       athleteClubs = await getAthleteClubs(stravaData.accessToken);
@@ -178,35 +171,74 @@ function DisplayResults() {
           expires: Date.now() + 10 * 60 * 1000,
         })
       );
-      console.log("clubs fetched brand new");
     }
 
     if (athleteClubs.length > 0) {
-      const ggID = 1229955;
+      // const ggID = 1229955;
+      const ggID = 0;
       const albID = 1406254;
       const ggClub = athleteClubs.find((club) => club.id === ggID);
       const albClub = athleteClubs.find((club) => club.id === albID);
 
       if (ggClub) {
-        console.log("found gg club memebership");
         qualifyingClubs.push(ggClub);
       }
 
       if (albClub) {
-        console.log("found alb club membership");
         qualifyingClubs.push(albClub);
       }
 
-      console.log(qualifyingClubs);
-
       if (ggClub || albClub) {
         setMemberOfQualifiedClub(true);
+
+        // get all clubs activities
+        let allClubsData = [];
+        const cachedClubsActivities = sessionStorage.getItem(
+          "strava-cached-club-activities"
+        );
+        if (cachedClubsActivities) {
+          const parsed = JSON.parse(cachedClubsActivities);
+          if (Date.now() < parsed.expires) {
+            // in date, use
+            allClubsData = parsed.clubActivities;
+          } else {
+            // Expired, retrieve new
+            for (const club of qualifyingClubs) {
+              const clubActivities = await getClubActivities(
+                stravaData.accessToken,
+                club.id
+              );
+              allClubsData.push({ club, clubActivities });
+            }
+            sessionStorage.setItem(
+              "strava-cached-club-activities",
+              JSON.stringify({
+                clubActivities: allClubsData,
+                expires: Date.now() + 10 * 60 * 1000,
+              })
+            );
+          }
+        } else {
+          for (const club of qualifyingClubs) {
+            const clubActivities = await getClubActivities(
+              stravaData.accessToken,
+              club.id
+            );
+            allClubsData.push({ club, clubActivities });
+          }
+          sessionStorage.setItem(
+            "strava-cached-club-activities",
+            JSON.stringify({
+              clubActivities: allClubsData,
+              expires: Date.now() + 10 * 60 * 1000,
+            })
+          );
+        }
+        setClubsData(allClubsData);
       }
     }
-    // const clubActivities = await getClubActivities(
-    //   stravaData.accessToken,
-    //   1406254 // get this dynamically
-    // );
+
+    // default to personal > runs on page load
     const allRuns = filterActivitiesByType("Run", activities);
     setActivitiesToDisplay(allRuns);
     setLoadingState(false);
@@ -246,45 +278,19 @@ function DisplayResults() {
           populateRuns={populateRuns}
           populateWalks={populateWalks}
           populateRides={populateRides}
+          setStatType={setStatType}
           loadingState={loadingState}
           clubs={memberOfQualifiedClub}
         />
-        <TopStatContainer
-          loadingState={loadingState}
-          activities={activitiesToDisplay}
-          currentlyDisplaying={currentlyDisplaying}
-        />
+        {statType === "personal" && (
+          <PersonalStats
+            loadingState={loadingState}
+            activitiesToDisplay={activitiesToDisplay}
+            currentlyDisplaying={currentlyDisplaying}
+          />
+        )}
 
-        <div className="graph-collection">
-          <Graph
-            data={activitiesToDisplay}
-            graphNum={1}
-            time={"month"}
-            title={"Monthly Total (km)"}
-            lineGraph={true}
-            loadingState={loadingState}
-            currentlyDisplaying={currentlyDisplaying}
-          />
-          <Graph
-            data={activitiesToDisplay}
-            graphNum={2}
-            time={"day"}
-            title={"Daily Total (km)"}
-            lineGraph={false}
-            loadingState={loadingState}
-          />
-        </div>
-        <div className="bottom-stat-collection">
-          <Last5RunsTable
-            loadingState={loadingState}
-            activities={activitiesToDisplay}
-            currentlyDisplaying={currentlyDisplaying}
-          />
-          <OtherStats
-            loadingState={loadingState}
-            activities={activitiesToDisplay}
-          />
-        </div>
+        {statType === "clubs" && <ClubStats allClubsData={clubsData} />}
       </div>
       <Footer />
     </>
