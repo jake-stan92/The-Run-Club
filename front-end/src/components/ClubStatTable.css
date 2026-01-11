@@ -11,9 +11,21 @@
 
 .club-stats-athlete-name-column {
   text-align: left;
+  display: flex;
+  gap: 1rem;
+  width: 100%;
 }
 
-.clubs-stats-table td {
+.club-stats-athlete-name-column img,
+.clubs-stats-athlete-name-column-img-placeholder {
+  width: 25px;
+}
+
+.clubs-stats-athlete-name-column-img-placeholder {
+  text-align: center;
+}
+
+.clubs-stats-table td:not(.club-stats-athlete-name-column) {
   width: 50%;
 }
 
